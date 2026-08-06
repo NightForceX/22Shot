@@ -5,7 +5,7 @@
   "description": "Local screenshot capture, editing, and PDF document building for Firefox.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "22shot@local",
+      "id": "22shot@nightforcex",
       "strict_min_version": "128.0",
       "data_collection_permissions": {
         "required": ["none"]

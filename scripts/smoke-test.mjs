@@ -315,7 +315,7 @@ async function loadModules() {
   // Minimal browser shim for modules that touch it at import time
   const shim = `
     globalThis.browser = globalThis.browser || {
-      runtime: { id: "22shot@local", getURL: (p) => "moz-extension://test/" + p },
+      runtime: { id: "22shot@nightforcex", getURL: (p) => "moz-extension://test/" + p },
       storage: {
         local: {
           _data: {},
@@ -415,7 +415,7 @@ ok(
   threw = false;
   try {
     mod.assertSenderAllowed("CAPTURE_VISIBLE", {
-      id: "22shot@local",
+      id: "22shot@nightforcex",
       url: "https://example.com/",
       tab: { id: 1 },
     });
@@ -427,7 +427,7 @@ ok(
   threw = false;
   try {
     mod.assertSenderAllowed("REGION_SELECTED", {
-      id: "22shot@local",
+      id: "22shot@nightforcex",
       url: "https://example.com/",
       tab: { id: 1 },
     });

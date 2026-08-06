@@ -120,7 +120,7 @@ async function resolveExtensionBase(driver) {
             const json = m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\");
             try {
               const map = JSON.parse(json);
-              const uuid = map["22shot@local"];
+              const uuid = map["22shot@nightforcex"];
               if (uuid) {
                 const base = `moz-extension://${uuid}/`;
                 await driver.get(base + "options/options.html");
@@ -152,7 +152,7 @@ async function resolveExtensionBase(driver) {
   for (let i = 0; i < 25; i++) {
     const html = await driver.getPageSource();
     const uuid =
-      uuidNear(html, "22shot@local") ||
+      uuidNear(html, "22shot@nightforcex") ||
       uuidNear(html, "22Shot");
     if (uuid) {
       const base = `moz-extension://${uuid}/`;
@@ -237,7 +237,7 @@ async function main() {
     ok("installAddon temporary", !!addonId, String(addonId));
     ok(
       "addon id matches",
-      addonId === "22shot@local" || String(addonId).includes("22shot"),
+      addonId === "22shot@nightforcex" || String(addonId).includes("22shot"),
       String(addonId)
     );
     await sleep(1000);
