@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Iframe Child</title>
+<style>body{font-family:system-ui;margin:12px;background:#f4f4f8}</style>
+</head>
+<body>
+<h2>Same-origin iframe content</h2>
+<div id="c"></div>
+<script>
+for(let i=1;i<=40;i++) document.getElementById('c').innerHTML+=`<p>Frame line ${i}</p>`;
+</script>
+</body></html>

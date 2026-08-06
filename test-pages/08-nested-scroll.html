@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Nested Scroll</title>
+<style>
+body{font-family:system-ui;margin:24px}
+.outer{width:420px;height:320px;overflow:auto;border:2px solid #333;padding:8px}
+.inner{height:180px;overflow:auto;border:2px solid #0a84ff;margin:12px 0;padding:8px}
+</style></head>
+<body>
+<h1>Nested scroll containers</h1>
+<div class="outer" id="outer"><div class="inner" id="inner"></div></div>
+<script>
+const inner=document.getElementById('inner');
+const outer=document.getElementById('outer');
+for(let i=1;i<=40;i++) inner.innerHTML+=`<p>Inner ${i}</p>`;
+for(let i=1;i<=30;i++) outer.innerHTML+=`<p>Outer ${i}</p>`;
+outer.prepend(inner);
+</script>
+</body></html>

@@ -1,0 +1,110 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f0f0f4;
+  --panel: #ffffff;
+  --fg: #15141a;
+  --muted: #5b5b66;
+  --border: #cfcfd8;
+  --primary: #0a84ff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1b22;
+    --panel: #2b2a33;
+    --fg: #fbfbfe;
+    --muted: #cfcfd8;
+    --border: #5b5b66;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+main {
+  max-width: 640px;
+  margin: 24px auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+form {
+  display: grid;
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+label.row {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: #5b5b66;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.primary {
+  background: var(--primary);
+}
+
+#status {
+  color: var(--muted);
+  font-size: 13px;
+}

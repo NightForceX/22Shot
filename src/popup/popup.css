@@ -1,0 +1,183 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f9f9fb;
+  --fg: #15141a;
+  --muted: #5b5b66;
+  --border: #cfcfd8;
+  --btn: #e0e0e6;
+  --btn-hover: #d0d0d8;
+  --primary: #0a84ff;
+  --primary-fg: #ffffff;
+  --danger: #c50042;
+  --radius: 6px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #2b2a33;
+    --fg: #fbfbfe;
+    --muted: #cfcfd8;
+    --border: #5b5b66;
+    --btn: #5b5b66;
+    --btn-hover: #6d6d78;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 280px;
+  padding: 10px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 13px;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.actions {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.actions.secondary {
+  margin-top: 2px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-row input {
+  margin: 0;
+}
+
+.action {
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  background: var(--btn);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.action:hover {
+  background: var(--btn-hover);
+}
+
+.action.primary {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+.action:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+
+.doc-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.result {
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.result-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+#preview {
+  width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.result-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.result-actions button {
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 7px;
+  background: var(--btn);
+  color: var(--fg);
+  cursor: pointer;
+  font: inherit;
+}
+
+.status {
+  margin: 0 0 8px;
+  min-height: 1.2em;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status.error {
+  color: #c50042;
+}
+
+footer {
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+footer .linkish {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  text-decoration: underline;
+}

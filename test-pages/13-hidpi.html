@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>High-DPI Test</title>
+<style>
+body{font-family:system-ui;margin:24px}
+canvas{border:1px solid #333;image-rendering:pixelated}
+</style></head>
+<body>
+<h1>High-DPI test</h1>
+<p id="info"></p>
+<canvas id="c" width="400" height="200"></canvas>
+<script>
+const dpr=window.devicePixelRatio||1;
+document.getElementById('info').textContent=`devicePixelRatio=${dpr}`;
+const c=document.getElementById('c');
+const ctx=c.getContext('2d');
+ctx.fillStyle='#0a84ff';
+ctx.fillRect(0,0,400,200);
+ctx.fillStyle='#fff';
+ctx.font='20px sans-serif';
+ctx.fillText('Sharp text at native DPR',20,100);
+</script>
+</body></html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Fixed Footer</title>
+<style>
+body{margin:0 0 80px;font-family:system-ui,sans-serif}
+footer{position:fixed;left:0;right:0;bottom:0;background:#1c1b22;color:#fff;padding:16px;text-align:center}
+main{padding:16px;max-width:720px;margin:0 auto}
+</style></head>
+<body>
+<main id="c"></main>
+<footer>Fixed Footer</footer>
+<script>
+const c=document.getElementById('c');
+for(let i=1;i<=45;i++) c.innerHTML+=`<p>Paragraph ${i}. ${'Text '.repeat(30)}</p>`;
+</script>
+</body></html>

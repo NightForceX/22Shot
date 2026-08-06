@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Inner Horizontal Scroll</title>
+<style>
+body{font-family:system-ui;margin:24px}
+.panel{width:480px;height:160px;overflow-x:auto;overflow-y:hidden;border:2px solid #0a84ff;white-space:nowrap}
+.cell{display:inline-block;width:140px;height:120px;margin:8px;background:#e0e0e6;text-align:center;line-height:120px}
+</style></head>
+<body>
+<h1>Inner horizontal scroll</h1>
+<div class="panel" id="panel"></div>
+<script>
+const p=document.getElementById('panel');
+for(let i=1;i<=40;i++) p.innerHTML+=`<div class="cell">Col ${i}</div>`;
+</script>
+</body></html>

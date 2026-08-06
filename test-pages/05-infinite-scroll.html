@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Infinite Scroll</title>
+<style>body{font-family:system-ui;margin:16px}.item{padding:16px;border-bottom:1px solid #ccc}</style>
+</head>
+<body>
+<h1>Infinite scroll feed</h1>
+<div id="feed"></div>
+<script>
+let n=0;
+const feed=document.getElementById('feed');
+function add(count=20){
+  for(let i=0;i<count;i++){
+    n++;
+    const d=document.createElement('div');
+    d.className='item';
+    d.textContent=`Item ${n} — ${'word '.repeat(20)}`;
+    feed.appendChild(d);
+  }
+}
+add();
+window.addEventListener('scroll',()=>{
+  if(window.scrollY+window.innerHeight>document.body.scrollHeight-200){
+    if(n<400) add(15);
+  }
+});
+</script>
+</body></html>

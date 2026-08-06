@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'" />
+    <title>22Shot Workspace</title>
+    <link rel="stylesheet" href="editor.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div class="brand">22Shot</div>
+        <div class="tools" role="toolbar" aria-label="Edit tools">
+          <button type="button" data-tool="select" class="active" title="Select">Select</button>
+          <button type="button" data-tool="blur" title="Area blur">Blur</button>
+          <button type="button" data-tool="lineblur" title="Blur one text line">Line Blur</button>
+          <button type="button" data-tool="redact" title="Redact">Redact</button>
+          <button type="button" data-tool="rect" title="Rectangle">Rect</button>
+          <button type="button" data-tool="arrow" title="Arrow">Arrow</button>
+          <button type="button" data-tool="line" title="Line">Line</button>
+          <button type="button" data-tool="text" title="Text">Text</button>
+          <button type="button" data-tool="highlighter" title="Highlighter">Highlight</button>
+          <button type="button" data-tool="freehand" title="Freehand">Draw</button>
+          <button type="button" data-tool="eraser" title="Eraser">Eraser</button>
+          <button type="button" id="btn-undo" title="Undo (Ctrl+Z)">Undo</button>
+          <button type="button" id="btn-redo" title="Redo (Ctrl+Shift+Z)">Redo</button>
+          <span class="tool-sep" aria-hidden="true"></span>
+          <div class="zoom-controls" role="group" aria-label="View zoom">
+            <button type="button" id="btn-zoom-out" title="Zoom out (Ctrl+−)">−</button>
+            <button type="button" id="btn-zoom-label" title="Reset zoom to fit" aria-live="polite">
+              100%
+            </button>
+            <button type="button" id="btn-zoom-in" title="Zoom in (Ctrl++)">+</button>
+            <button type="button" id="btn-zoom-fit" title="Fit in view">Fit</button>
+          </div>
+        </div>
+        <div class="export-bar">
+          <button type="button" id="btn-copy">Copy</button>
+          <button type="button" id="btn-save">Save</button>
+          <button type="button" id="btn-export-pdf" class="primary">Export PDF</button>
+        </div>
+      </header>
+
+      <aside class="nav" id="nav-aside" aria-label="Pages">
+        <div class="nav-head">
+          <input id="doc-title" type="text" aria-label="Document title" />
+          <div class="nav-head-actions">
+            <button type="button" id="btn-nav-save" class="primary" title="Save the current capture">
+              Save
+            </button>
+            <button type="button" id="btn-new-doc" class="secondary" title="Start a new empty document">
+              New document
+            </button>
+          </div>
+        </div>
+        <div class="name-box">
+          <label>
+            Name style
+            <select id="name-preset" aria-label="Document name style"></select>
+          </label>
+          <label id="name-custom-wrap" hidden>
+            Custom template
+            <input
+              id="name-template"
+              type="text"
+              spellcheck="false"
+              placeholder="{website} - {place} - {date} {time}"
+            />
+          </label>
+          <p id="name-preview" class="name-preview" title="Preview from active capture"></p>
+          <p id="name-meta" class="name-meta muted"></p>
+          <div class="name-actions">
+            <button type="button" id="btn-apply-name" title="Set document title from this style">
+              Apply to document
+            </button>
+          </div>
+        </div>
+        <div class="page-toolbar">
+          <label class="page-check-all">
+            <input id="select-all-pages" type="checkbox" />
+            <span>Select all</span>
+          </label>
+          <div class="page-toolbar-actions">
+            <button type="button" id="btn-delete-selected" disabled title="Delete checked captures">
+              Delete selected
+            </button>
+            <button type="button" id="btn-delete-all" title="Delete every capture in this document">
+              Delete all
+            </button>
+          </div>
+        </div>
+        <ul id="page-list"></ul>
+        <div
+          class="nav-resizer"
+          id="nav-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize pages sidebar"
+          aria-valuemin="180"
+          aria-valuemax="560"
+          tabindex="0"
+        ></div>
+      </aside>
+
+      <main class="workspace">
+        <div class="page-canvas-wrap">
+          <div class="page-sheet" id="page-sheet">
+            <div class="canvas-stage" id="canvas-stage">
+              <canvas id="canvas"></canvas>
+              <div id="blur-guide" class="blur-guide" hidden></div>
+              <div id="break-lines" class="break-lines"></div>
+            </div>
+          </div>
+        </div>
+        <div id="empty" class="empty">
+          Capture a screenshot, then open it here or add it to a document.
+        </div>
+      </main>
+
+      <aside class="props" aria-label="Properties">
+        <section class="prop-section tool-props">
+          <div class="prop-section-head">
+            <h2>Tool</h2>
+            <span id="tool-props-title" class="tool-name">Select</span>
+          </div>
+          <p id="tool-hint" class="hint">Select a page from the left, or switch tools to annotate.</p>
+
+          <div class="prop-group" data-tool-panel="panel-select">
+            <p class="hint">No tool options. Choose Blur, shapes, or Draw from the toolbar.</p>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-blur" hidden>
+            <h3>Blur</h3>
+            <label>
+              Strength
+              <span class="value-row">
+                <input id="blur-strength" type="range" min="4" max="40" value="22" />
+                <output id="blur-strength-val" for="blur-strength">22</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-lineblur" hidden>
+            <h3>Line band</h3>
+            <label>
+              Guide color
+              <span class="color-row">
+                <input id="lineblur-guide-color" type="color" value="#ffe000" />
+                <span class="swatches swatches-wide" data-target="lineblur-guide-color">
+                  <button type="button" data-color="#ffe000" title="Yellow" style="background:#ffe000"></button>
+                  <button type="button" data-color="#ffe900" title="Bright yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#2ac3a2" title="Teal" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#64d2ff" title="Sky" style="background:#64d2ff"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#bf5af2" title="Purple" style="background:#bf5af2"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Line height
+              <span class="value-row">
+                <input id="line-height" type="range" min="10" max="120" value="28" />
+                <output id="line-height-val" for="line-height">28px</output>
+              </span>
+            </label>
+            <label>
+              Width mode
+              <select id="line-width-mode">
+                <option value="drag" selected>Drag across line</option>
+                <option value="full">Full image width</option>
+              </select>
+            </label>
+            <label>
+              Side padding
+              <span class="value-row">
+                <input id="line-padding" type="range" min="0" max="80" value="8" />
+                <output id="line-padding-val" for="line-padding">8px</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-redact" hidden>
+            <h3>Redact</h3>
+            <label>
+              Style
+              <select id="redact-style">
+                <option value="solid" selected>Solid fill</option>
+                <option value="hatch">Hatch</option>
+                <option value="outline">Outline only</option>
+              </select>
+            </label>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="redact-color" type="color" value="#000000" />
+                <span class="swatches swatches-wide" data-target="redact-color">
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#1a1a1a" title="Charcoal" style="background:#1a1a1a"></button>
+                  <button type="button" data-color="#3a3a40" title="Slate" style="background:#3a3a40"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                  <button type="button" data-color="#f0f0f0" title="Off-white" style="background:#f0f0f0"></button>
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#8b0000" title="Dark red" style="background:#8b0000"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#003d7a" title="Navy" style="background:#003d7a"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#ffe900" title="Yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ac8e68" title="Tan" style="background:#ac8e68"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Opacity
+              <span class="value-row">
+                <input id="redact-opacity" type="range" min="20" max="100" value="100" />
+                <output id="redact-opacity-val" for="redact-opacity">100%</output>
+              </span>
+            </label>
+            <label>
+              Corner radius
+              <span class="value-row">
+                <input id="redact-radius" type="range" min="0" max="40" value="0" />
+                <output id="redact-radius-val" for="redact-radius">0px</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-shape" hidden>
+            <h3>Rectangle</h3>
+            <label>
+              Stroke
+              <span class="color-row">
+                <input id="stroke-color" type="color" value="#0a84ff" />
+                <span class="swatches" data-target="stroke-color">
+                  <button type="button" data-color="#0a84ff" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#c50042" style="background:#c50042"></button>
+                  <button type="button" data-color="#2ac3a2" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#000000" style="background:#000"></button>
+                  <button type="button" data-color="#ffffff" style="background:#fff"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Stroke width
+              <span class="value-row">
+                <input id="stroke-width" type="range" min="1" max="24" value="3" />
+                <output id="stroke-width-val" for="stroke-width">3px</output>
+              </span>
+            </label>
+            <label class="row">
+              <input id="fill-enabled" type="checkbox" />
+              Fill rectangle
+            </label>
+            <label>
+              Fill color
+              <input id="fill-color" type="color" value="#0a84ff" />
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-stroke" hidden>
+            <h3>Line</h3>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="line-stroke-color" type="color" value="#c50042" />
+                <span class="swatches swatches-wide" data-target="line-stroke-color">
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ffe900" title="Yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#2ac3a2" title="Teal" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#bf5af2" title="Purple" style="background:#bf5af2"></button>
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                  <button type="button" data-color="#ac8e68" title="Tan" style="background:#ac8e68"></button>
+                  <button type="button" data-color="#8b4513" title="Brown" style="background:#8b4513"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Width
+              <span class="value-row">
+                <input id="line-stroke-width" type="range" min="1" max="24" value="3" />
+                <output id="line-stroke-width-val" for="line-stroke-width">3px</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-arrow" hidden>
+            <h3>Arrow</h3>
+            <label>
+              Heads
+              <select id="arrow-heads">
+                <option value="end" selected>End (drag tip)</option>
+                <option value="start">Start</option>
+                <option value="both">Both ends</option>
+              </select>
+            </label>
+            <label class="row">
+              <input id="arrow-filled" type="checkbox" checked />
+              Filled head
+            </label>
+            <label>
+              Head size
+              <span class="value-row">
+                <input id="arrow-head-size" type="range" min="5" max="30" value="10" />
+                <output id="arrow-head-size-val" for="arrow-head-size">1.0×</output>
+              </span>
+            </label>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="arrow-color" type="color" value="#c50042" />
+                <span class="swatches swatches-wide" data-target="arrow-color">
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ffe900" title="Yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#2ac3a2" title="Teal" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#bf5af2" title="Purple" style="background:#bf5af2"></button>
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Line width
+              <span class="value-row">
+                <input id="arrow-width" type="range" min="1" max="24" value="3" />
+                <output id="arrow-width-val" for="arrow-width">3px</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-text" hidden>
+            <h3>Text</h3>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="text-color" type="color" value="#c50042" />
+                <span class="swatches swatches-wide" data-target="text-color">
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ffe900" title="Yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#2ac3a2" title="Teal" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#64d2ff" title="Sky" style="background:#64d2ff"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#bf5af2" title="Purple" style="background:#bf5af2"></button>
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                  <button type="button" data-color="#ac8e68" title="Tan" style="background:#ac8e68"></button>
+                  <button type="button" data-color="#8b4513" title="Brown" style="background:#8b4513"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Size
+              <span class="value-row">
+                <input id="text-size" type="range" min="10" max="96" value="22" />
+                <output id="text-size-val" for="text-size">22px</output>
+              </span>
+            </label>
+            <label>
+              Font
+              <select id="text-font">
+                <option value="Segoe UI, sans-serif">Segoe UI</option>
+                <option value="Arial, Helvetica, sans-serif">Arial</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="Consolas, monospace">Consolas</option>
+                <option value="Comic Sans MS, cursive">Comic Sans</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-highlight" hidden>
+            <h3>Highlight</h3>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="highlight-color" type="color" value="#ffe900" />
+                <span class="swatches" data-target="highlight-color">
+                  <button type="button" data-color="#ffe900" style="background:#ffe900"></button>
+                  <button type="button" data-color="#ff9f0a" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#30d158" style="background:#30d158"></button>
+                  <button type="button" data-color="#0a84ff" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#ff375f" style="background:#ff375f"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Opacity
+              <span class="value-row">
+                <input id="highlight-opacity" type="range" min="10" max="80" value="35" />
+                <output id="highlight-opacity-val" for="highlight-opacity">35%</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-draw" hidden>
+            <h3>Draw</h3>
+            <label>
+              Color
+              <span class="color-row">
+                <input id="draw-color" type="color" value="#c50042" />
+                <span class="swatches swatches-wide" data-target="draw-color">
+                  <button type="button" data-color="#c50042" title="Red" style="background:#c50042"></button>
+                  <button type="button" data-color="#ff375f" title="Pink" style="background:#ff375f"></button>
+                  <button type="button" data-color="#ff9f0a" title="Orange" style="background:#ff9f0a"></button>
+                  <button type="button" data-color="#ffe900" title="Yellow" style="background:#ffe900"></button>
+                  <button type="button" data-color="#30d158" title="Green" style="background:#30d158"></button>
+                  <button type="button" data-color="#2ac3a2" title="Teal" style="background:#2ac3a2"></button>
+                  <button type="button" data-color="#0a84ff" title="Blue" style="background:#0a84ff"></button>
+                  <button type="button" data-color="#64d2ff" title="Sky" style="background:#64d2ff"></button>
+                  <button type="button" data-color="#5e5ce6" title="Indigo" style="background:#5e5ce6"></button>
+                  <button type="button" data-color="#bf5af2" title="Purple" style="background:#bf5af2"></button>
+                  <button type="button" data-color="#000000" title="Black" style="background:#000000"></button>
+                  <button type="button" data-color="#5b5b66" title="Gray" style="background:#5b5b66"></button>
+                  <button type="button" data-color="#ffffff" title="White" style="background:#ffffff"></button>
+                  <button type="button" data-color="#ac8e68" title="Tan" style="background:#ac8e68"></button>
+                  <button type="button" data-color="#8b4513" title="Brown" style="background:#8b4513"></button>
+                </span>
+              </span>
+            </label>
+            <label>
+              Thickness
+              <span class="value-row">
+                <input id="draw-width" type="range" min="1" max="32" value="3" />
+                <output id="draw-width-val" for="draw-width">3px</output>
+              </span>
+            </label>
+          </div>
+
+          <div class="prop-group" data-tool-panel="panel-eraser" hidden>
+            <h3>Eraser</h3>
+            <label>
+              Mode
+              <select id="eraser-mode">
+                <option value="annotations" selected>Erase intersecting marks</option>
+                <option value="last">Remove last mark</option>
+              </select>
+            </label>
+            <p class="hint">Drag over annotations to remove them, or use Undo for precise steps.</p>
+          </div>
+        </section>
+
+        <section class="prop-section">
+          <h2>Document</h2>
+          <label>
+            Page size
+            <select id="page-size">
+              <option value="letter">Letter</option>
+              <option value="legal">Legal</option>
+              <option value="a4">A4</option>
+              <option value="a3">A3</option>
+              <option value="tabloid">Tabloid</option>
+              <option value="automatic">Automatic</option>
+              <option value="image">Image size</option>
+            </select>
+          </label>
+          <label>
+            Orientation
+            <select id="orientation">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+          <label>
+            Margins
+            <select id="margins">
+              <option value="none">None</option>
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </label>
+          <label>
+            Image fit
+            <select id="image-fit">
+              <option value="fit-width">Fit width</option>
+              <option value="fit-height">Fit height</option>
+              <option value="fit-page">Fit page</option>
+              <option value="actual">Actual size</option>
+            </select>
+          </label>
+          <label>
+            Align
+            <select id="image-align">
+              <option value="top">Top</option>
+              <option value="center">Center</option>
+            </select>
+          </label>
+          <label class="row">
+            <input id="show-page-breaks" type="checkbox" />
+            Show PDF page-break guides
+          </label>
+          <label class="row">
+            <input id="preserve-pdf-links" type="checkbox" checked />
+            Preserve links in Export PDF
+          </label>
+        </section>
+
+        <p id="dims" class="muted"></p>
+        <p id="status" class="muted" role="status"></p>
+      </aside>
+    </div>
+
+    <dialog id="export-dialog">
+      <form method="dialog" id="export-form">
+        <h3>Export</h3>
+        <label>
+          Name style
+          <select id="export-name-preset"></select>
+        </label>
+        <label id="export-custom-wrap" hidden>
+          Custom template
+          <input
+            id="export-name-template"
+            type="text"
+            spellcheck="false"
+            placeholder="{title} - {website} - {date} {time}"
+          />
+        </label>
+        <p id="export-name-hint" class="hint">
+          Tokens: {title} {website} {place} {date} {time} {url} {doc}
+        </p>
+        <label>
+          Filename
+          <input id="export-filename" type="text" required />
+        </label>
+        <label>
+          Format
+          <select id="export-format">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPG</option>
+            <option value="webp">WEBP</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </label>
+        <label>
+          Quality
+          <input id="export-quality" type="number" min="1" max="100" value="95" />
+        </label>
+        <label>
+          Scale %
+          <input id="export-scale" type="number" min="10" max="100" value="100" />
+        </label>
+        <label class="row">
+          <input id="export-meta" type="checkbox" />
+          Include metadata
+        </label>
+        <div class="dialog-actions">
+          <button type="submit" value="save" class="primary">Save</button>
+          <button type="submit" value="copy">Copy</button>
+          <button type="submit" value="cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="editor.js"></script>
+  </body>
+</html>

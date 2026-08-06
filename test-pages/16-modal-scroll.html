@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Modal Scroll</title>
+<style>
+body{font-family:system-ui;margin:24px}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);display:grid;place-items:center}
+.modal{width:min(480px,90vw);height:60vh;overflow:auto;background:#fff;padding:16px;border-radius:8px}
+</style></head>
+<body>
+<h1>Page behind modal</h1>
+<p>Background content</p>
+<div class="backdrop">
+  <div class="modal" id="modal"></div>
+</div>
+<script>
+const m=document.getElementById('modal');
+m.innerHTML='<h2>Scrollable modal</h2>';
+for(let i=1;i<=60;i++) m.innerHTML+=`<p>Modal line ${i}</p>`;
+</script>
+</body></html>

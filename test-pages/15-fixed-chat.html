@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Fixed Chat Widget</title>
+<style>
+body{font-family:system-ui;margin:16px 16px 120px}
+.chat{position:fixed;right:16px;bottom:16px;width:220px;height:280px;background:#2b2a33;color:#fff;border-radius:12px;padding:12px;z-index:20}
+</style></head>
+<body>
+<h1>Fixed chat widget</h1>
+<div id="c"></div>
+<div class="chat">Chat widget (fixed)</div>
+<script>
+for(let i=1;i<=50;i++) document.getElementById('c').innerHTML+=`<p>Content ${i}</p>`;
+</script>
+</body></html>

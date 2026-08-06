@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "22Shot",
+  "version": "1.0.0",
+  "description": "Local screenshot capture, editing, and PDF document building for Firefox.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "22shot@local",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "downloads",
+    "clipboardWrite",
+    "menus",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "optional_permissions": ["<all_urls>"],
+  "background": {
+    "scripts": ["background/background.js"],
+    "type": "module"
+  },
+  "action": {
+    "default_title": "22Shot",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "96": "icons/icon-96.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  }
+}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Inner Vertical Scroll</title>
+<style>
+body{font-family:system-ui;margin:24px}
+.panel{width:360px;height:280px;overflow:auto;border:2px solid #0a84ff;padding:8px}
+</style></head>
+<body>
+<h1>Inner vertical scroll container</h1>
+<p>Select the blue panel and use “Capture full scrollable”.</p>
+<div class="panel" id="panel"></div>
+<script>
+const p=document.getElementById('panel');
+for(let i=1;i<=80;i++) p.innerHTML+=`<p>Row ${i}</p>`;
+</script>
+</body></html>

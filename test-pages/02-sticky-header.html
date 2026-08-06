@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Sticky Header</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif}
+header{position:sticky;top:0;background:#0a84ff;color:#fff;padding:12px 16px;z-index:10}
+main{max-width:720px;margin:0 auto;padding:16px;line-height:1.5}
+</style></head>
+<body>
+<header>Sticky Header — should appear once in full-page Auto mode</header>
+<main id="c"></main>
+<script>
+const c=document.getElementById('c');
+for(let i=1;i<=50;i++){c.innerHTML+=`<p><strong>Block ${i}</strong> — ${'content '.repeat(40)}</p>`;}
+</script>
+</body></html>

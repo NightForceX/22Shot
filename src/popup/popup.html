@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>22Shot</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>22Shot</h1>
+    </header>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <section class="actions" aria-label="Capture">
+      <button type="button" id="btn-region" class="action">Select Area</button>
+      <button type="button" id="btn-visible" class="action primary">Visible Area</button>
+      <button type="button" id="btn-fullpage" class="action">Full Page</button>
+      <button type="button" id="btn-element" class="action">Select Element</button>
+    </section>
+
+    <section class="actions secondary" aria-label="Export">
+      <button type="button" id="btn-pdf" class="action">
+        Save Webpage as PDF
+      </button>
+      <label class="check-row">
+        <input id="preserve-links" type="checkbox" checked />
+        Preserve links in PDF
+      </label>
+    </section>
+
+    <hr />
+
+    <section class="doc" aria-label="Document">
+      <div class="doc-row">
+        <div>
+          <div class="label">Document</div>
+          <div id="doc-summary" class="muted">Loading…</div>
+        </div>
+        <button type="button" id="btn-workspace" class="action">Open Workspace</button>
+      </div>
+    </section>
+
+    <section id="result" class="result" hidden>
+      <div class="result-title">Capture ready</div>
+      <img id="preview" alt="Capture preview" />
+      <div class="result-actions">
+        <button type="button" id="btn-edit">Edit</button>
+        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-save">Save PNG</button>
+        <button type="button" id="btn-add">Add to Document</button>
+      </div>
+    </section>
+
+    <footer>
+      <button type="button" id="btn-options" class="linkish">Options</button>
+    </footer>
+
+    <script src="popup-boot.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
