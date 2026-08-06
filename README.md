@@ -10,7 +10,7 @@
 
 **Capture any part of a webpage. Edit it. Build documents. Export it — entirely on your device.**
 
-[![Firefox](https://img.shields.io/badge/Firefox-128%2B-FF7139?logo=firefoxbrowser&logoColor=white)](https://www.mozilla.org/firefox/)
+[![Firefox](https://img.shields.io/badge/Firefox-140%2B-FF7139?logo=firefoxbrowser&logoColor=white)](https://www.mozilla.org/firefox/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-4C9AFF)](#architecture)
 [![TypeScript](https://img.shields.io/badge/TypeScript-powered-3178C6?logo=typescript&logoColor=white)](#development)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-2ea44f)](#privacy)
@@ -250,7 +250,7 @@ The Firefox manifest declares:
 
 ### Requirements
 
-- **Desktop Firefox 128+**
+- **Desktop Firefox 140+**
 - **Node.js 20+** to build from source
 
 Clone the repository:
@@ -404,7 +404,7 @@ Firefox screenshot extension · full-page screenshot · scrolling screenshot · 
 
 - **Current version:** `1.0.0`
 - **Target browser:** Desktop Firefox
-- **Minimum Firefox version:** `128`
+- **Minimum Firefox version:** `140`
 - **Manifest:** V3
 
 Found a bug or have an idea?  
